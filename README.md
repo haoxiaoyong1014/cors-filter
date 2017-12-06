@@ -7,21 +7,32 @@
  + cors.allowed.methods :http方法列表,cors.allowed.headers:请求头列表,cors.exposed.headers:是否暴露的头列表,默认 None ,cors.support.credentials:表示资源是否支持用户凭据的标志,默认:true,
  + cors.logging.enabled :用于控制日志记录到容器日志的标志。默认值:false
  + 查看源码可以发现,CrosFilter 是一个final修饰的类,所以没有办法去继承,或者重写方法,只能在Filter0_CrossOriginResource.java中new出corsFilter进行使用
- + 当程序运行时会先初始化我们的配置,例如: @WebInitParam(name="cors.allowed.origins",value = "*"),等等..分析源码可以看到(在此只以allowedOrigins为例,allowedHttpMethods等同理,不做分析):
+
++ 当程序运行时会先初始化我们的配置,例如: @WebInitParam(name="cors.allowed.origins",value = "*"),等等..分析源码可以看到(在此只以allowedOrigins为例,allowedHttpMethods等同理,不做分析):
 
 private void parseAndStore(final String allowedOrigins,
+
             final String allowedHttpMethods, final String allowedHttpHeaders,
+
             final String exposedHeaders, final String supportsCredentials,
+
             final String preflightMaxAge, final String loggingEnabled,
+
             final String decorateRequest)
             throws ServletException {
+
         if (allowedOrigins != null) {
-            if (allowedOrigins.trim().equals("*")) {                              //判断配置是否等同于*
+
+            if (allowedOrigins.trim().equals("*")) {                             //判断配置是否等同于*
+
                 this.anyOriginAllowed = true;
             } else {
                 this.anyOriginAllowed = false;
+
                 Set<String> setAllowedOrigins =parseStringToSet(allowedOrigins);  //调用parseStringToSet();
+
                 this.allowedOrigins.clear();                                      //清空默认或之前的配置
+
                 this.allowedOrigins.addAll(setAllowedOrigins);                    //将配置的域名添加到this.allowedOrigins
             }
         }
@@ -36,11 +47,17 @@ private Set<String> parseStringToSet(final String data) {
             splits = new String[] {};
         }
 
+
         Set<String> set = new HashSet<String>();
+
         if (splits.length > 0) {
+
             for (String split : splits) {                                          //分割之后进行遍历
+
                 set.add(split.trim());                                             //将域名添加到set集合中,并返回
+
             }
+
         }
 
         return set;
